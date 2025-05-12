@@ -1,44 +1,63 @@
 import requests
 from bs4 import BeautifulSoup
+import csv
 
 # html 파일을 읽어와서 파일 html,css 형태로 파싱
 with open("w0509/게시판3.html","r",encoding="utf8") as f:
     soup = BeautifulSoup(f,"lxml")
     
+# html태그 출력 soup.title
+print(soup.title)
+print(soup.title.get_text())
 
-# html 태그로 찾는 방법
-# print(soup.thead)
-# soup.find("thead",class_="")
-data = soup.find("thead")    
-print(data.find_all("th")[0].get_text())
+# 속성 출력 soup.a['href]
+print(soup.a['href'])
+
+# find(),find_all()
+
+data = soup.find("thead")
 ths = data.find_all("th")
-for th in ths:
-    print(th.get_text()[0])
+print("th개수 : ",len(ths))
 
-# 자바를 못읽음..
-print("*"*80)
-data = soup.find("tbody",id="tbody")
-trs = data.find_all("tr")
-# print(len(trs))
 
+
+
+#파일 저장
+fileName = "board.csv"
+ff = open("w0509/"+fileName,"w",encoding="utf-8-sig",newline="")
+writer = csv.writer(ff)
+
+
+
+#상단제목 파일에 저장
+topTitle = []
+for i,th in enumerate(ths):
+    if i<5:
+        print(th.get_text(),end="\t")
+        topTitle.append(th.get_text())
+writer.writerow(topTitle)
+print()
+
+print("-"*80)
+
+
+
+data2 = soup.find("tbody")
+trs = data2.find_all("tr")
 for tr in trs:
     tds = tr.find_all("td")
-    
-    if len(tds)>1:
-        for i in range(len(tds)-1):
-            print(tds[i].get_text(),end="\t")
-            print()
-                
+    if len(tds)<=1:continue
+    bodyData = [] #게시글 부분 데이터 저장
+    for i,td in enumerate(tds):
+        if i<5:
+            print(td.get_text(),end="\t")
+            bodyData.append(td.get_text())
+    writer.writerow(bodyData) # 파일에 게시글 1개를 저장
             
-            # print(td.get_text())
-    # print(len(tds))
-
-## find_next_sibling - 이후형제 찾기, find_previous_sibling - 이전형제 찾기  
-# data = soup.find("div",{"id":"input"})
-# data2 = data.find_next_Sibling()
-# print(data2)
-
-# print(data.div.get_text())
-
-
-
+    print()
+    
+    
+print("저장완료")
+    
+    
+    

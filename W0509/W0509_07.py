@@ -13,7 +13,7 @@ data = soup.find("thead")
 print(data.find_all("th")[0].get_text())
 ths = data.find_all("th")
 for th in ths:
-    print(th.get_text()[0])
+    print(th.get_text())
 
 # 자바를 못읽음..
 print("*"*80)
